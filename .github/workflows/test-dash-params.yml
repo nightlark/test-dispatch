@@ -31,16 +31,16 @@ jobs:
       
       - name: Display input values
         run: |
-          echo "some-thing input: ${{ inputs.some-thing }}"
-          echo "dry_run input: ${{ inputs.dry_run }}"
+          echo "some-thing input: ${{ inputs['some-thing'] }}"
+          echo "dry_run input: ${{ inputs['dry_run'] }}"
       
-      # Test 1: Access some-thing with dot notation (inputs.some-thing)
+      # Test 1: Access some-thing with dot notation (inputs['some-thing'])
       # This might not work due to the dash being interpreted as minus operator
       - name: Test 1 - Access some-thing with dot notation
-        if: inputs.some-thing == 'true'
+        if: inputs['some-thing'] == 'true'
         run: |
-          echo "Test 1 PASSED: Successfully accessed some-thing using inputs.some-thing syntax"
-          echo "Value: ${{ inputs.some-thing }}"
+          echo "Test 1 PASSED: Successfully accessed some-thing using inputs['some-thing'] syntax"
+          echo "Value: ${{ inputs['some-thing'] }}"
       
       # Test 2: Access some-thing with bracket notation (inputs['some-thing'])
       # This is the expected correct way to access properties with dashes
@@ -50,13 +50,13 @@ jobs:
           echo "Test 2 PASSED: Successfully accessed some-thing using inputs['some-thing'] syntax"
           echo "Value: ${{ inputs['some-thing'] }}"
       
-      # Test 3: Access dry_run with dot notation (inputs.dry_run)
+      # Test 3: Access dry_run with dot notation (inputs['dry_run'])
       # This should work fine as underscores are valid in identifiers
       - name: Test 3 - Access dry_run with dot notation
-        if: inputs.dry_run == 'true'
+        if: inputs['dry_run'] == 'true'
         run: |
-          echo "Test 3 PASSED: Successfully accessed dry_run using inputs.dry_run syntax"
-          echo "Value: ${{ inputs.dry_run }}"
+          echo "Test 3 PASSED: Successfully accessed dry_run using inputs['dry_run'] syntax"
+          echo "Value: ${{ inputs['dry_run'] }}"
       
       # Test 4: Access dry_run with bracket notation (inputs['dry_run'])
       # This should also work as an alternative syntax
@@ -79,12 +79,12 @@ jobs:
           echo ""
           echo "Parameters tested:"
           echo "  - some-thing (with dash): ${{ inputs['some-thing'] }}"
-          echo "  - dry_run (with underscore): ${{ inputs.dry_run }}"
+          echo "  - dry_run (with underscore): ${{ inputs['dry_run'] }}"
           echo ""
           echo "Expected results:"
-          echo "  - inputs.some-thing: May fail due to dash interpretation"
+          echo "  - inputs['some-thing']: May fail due to dash interpretation"
           echo "  - inputs['some-thing']: Should work correctly"
-          echo "  - inputs.dry_run: Should work correctly"
+          echo "  - inputs['dry_run']: Should work correctly"
           echo "  - inputs['dry_run']: Should work correctly"
           echo ""
           echo "Steps that executed indicate which syntaxes successfully evaluated to 'true'"
