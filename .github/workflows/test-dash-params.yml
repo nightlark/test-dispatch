@@ -65,7 +65,12 @@ jobs:
         run: |
           echo "Test 4 PASSED: Successfully accessed dry_run using inputs['dry_run'] syntax"
           echo "Value: ${{ inputs['dry_run'] }}"
-      
+
+      - name: Dump contexts for different github input fields
+        run: |
+          echo "github.event.inputs = ${{ toJson(github.event.inputs) }}"
+          echo "inputs = ${{ toJson(inputs) }}"
+          
       # Summary step to show which syntaxes worked
       - name: Test Summary
         run: |
