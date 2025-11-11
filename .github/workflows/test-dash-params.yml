@@ -3,7 +3,7 @@ name: Test Workflow Dispatch with Dashed Parameters
 on:
   workflow_dispatch:
     inputs:
-      dry-run:
+      some-thing:
         description: 'Parameter with dash in name'
         required: false
         default: 'false'
@@ -31,24 +31,24 @@ jobs:
       
       - name: Display input values
         run: |
-          echo "dry-run input: ${{ inputs.dry-run }}"
+          echo "some-thing input: ${{ inputs.some-thing }}"
           echo "dry_run input: ${{ inputs.dry_run }}"
       
-      # Test 1: Access dry-run with dot notation (inputs.dry-run)
+      # Test 1: Access some-thing with dot notation (inputs.some-thing)
       # This might not work due to the dash being interpreted as minus operator
-      - name: Test 1 - Access dry-run with dot notation
-        if: inputs.dry-run == 'true'
+      - name: Test 1 - Access some-thing with dot notation
+        if: inputs.some-thing == 'true'
         run: |
-          echo "Test 1 PASSED: Successfully accessed dry-run using inputs.dry-run syntax"
-          echo "Value: ${{ inputs.dry-run }}"
+          echo "Test 1 PASSED: Successfully accessed some-thing using inputs.some-thing syntax"
+          echo "Value: ${{ inputs.some-thing }}"
       
-      # Test 2: Access dry-run with bracket notation (inputs['dry-run'])
+      # Test 2: Access some-thing with bracket notation (inputs['some-thing'])
       # This is the expected correct way to access properties with dashes
-      - name: Test 2 - Access dry-run with bracket notation
-        if: inputs['dry-run'] == 'true'
+      - name: Test 2 - Access some-thing with bracket notation
+        if: inputs['some-thing'] == 'true'
         run: |
-          echo "Test 2 PASSED: Successfully accessed dry-run using inputs['dry-run'] syntax"
-          echo "Value: ${{ inputs['dry-run'] }}"
+          echo "Test 2 PASSED: Successfully accessed some-thing using inputs['some-thing'] syntax"
+          echo "Value: ${{ inputs['some-thing'] }}"
       
       # Test 3: Access dry_run with dot notation (inputs.dry_run)
       # This should work fine as underscores are valid in identifiers
@@ -73,12 +73,12 @@ jobs:
           echo "This workflow tests different syntaxes for accessing workflow_dispatch inputs"
           echo ""
           echo "Parameters tested:"
-          echo "  - dry-run (with dash): ${{ inputs['dry-run'] }}"
+          echo "  - some-thing (with dash): ${{ inputs['some-thing'] }}"
           echo "  - dry_run (with underscore): ${{ inputs.dry_run }}"
           echo ""
           echo "Expected results:"
-          echo "  - inputs.dry-run: May fail due to dash interpretation"
-          echo "  - inputs['dry-run']: Should work correctly"
+          echo "  - inputs.some-thing: May fail due to dash interpretation"
+          echo "  - inputs['some-thing']: Should work correctly"
           echo "  - inputs.dry_run: Should work correctly"
           echo "  - inputs['dry_run']: Should work correctly"
           echo ""
