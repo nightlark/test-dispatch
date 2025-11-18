@@ -1,0 +1,84 @@
+on:
+  workflow_dispatch:
+
+name: Scan ubuntu-slim image for binaries and libraries
+
+jobs:
+  scan:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Gather executables, libraries and packages
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          OUTDIR=scan-output
+          mkdir -p "$OUTDIR"
+
+          echo "Runner: $(uname -a)" > "$OUTDIR/runner.txt"
+          if [ -f /etc/os-release ]; then . /etc/os-release && echo "OS: $NAME $VERSION" >> "$OUTDIR/runner.txt"; fi
+
+          # PATH executables (filenames)
+          echo "=== PATH executables ===" > "$OUTDIR/path_executables.txt"
+          IFS=':' read -ra PATHDIRS <<< "$PATH"
+          for p in "${PATHDIRS[@]}"; do
+            [ -d "$p" ] || continue
+            find "$p" -maxdepth 1 -type f -executable -printf "%f\n" 2>/dev/null || true
+          done | sort -u >> "$OUTDIR/path_executables.txt"
+
+          # All executables under common bin dirs (full paths)
+          echo "=== All executables (full path) ===" > "$OUTDIR/all_executables.txt"
+          for d in /bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin; do
+            [ -d "$d" ] || continue
+            find "$d" -type f -executable -printf "%p\n" 2>/dev/null || true
+          done | sort -u >> "$OUTDIR/all_executables.txt"
+
+          # ldconfig cache (if available)
+          if command -v ldconfig >/dev/null 2>&1; then
+            ldconfig -p > "$OUTDIR/ldconfig_cache.txt" || true
+          else
+            echo "ldconfig not found" > "$OUTDIR/ldconfig_cache.txt"
+          fi
+
+          # Shared libraries found under common lib dirs
+          echo "=== Shared libraries under lib dirs ===" > "$OUTDIR/libs_by_path.txt"
+          for ld in /lib /lib64 /usr/lib /usr/lib64 /usr/local/lib; do
+            [ -d "$ld" ] || continue
+            find "$ld" -type f -name '*.so*' -printf "%p\n" 2>/dev/null || true
+          done | sort -u >> "$OUTDIR/libs_by_path.txt"
+
+          # Shared libs referenced by each ELF executable (ldd) - unique list
+          echo "=== Shared libs referenced by executables (ldd) ===" > "$OUTDIR/ldd_libs.txt"
+          # Only run ldd on ELF binaries to avoid noise
+          while IFS= read -r exe; do
+            [ -x "$exe" ] || continue
+            if file "$exe" | grep -q 'ELF'; then
+              ldd "$exe" 2>/dev/null | awk '{print $1}' | grep '\.' || true
+            fi
+          done < "$OUTDIR/all_executables.txt" | sort -u >> "$OUTDIR/ldd_libs.txt"
+
+          # Installed packages (dpkg / apk / rpm detection)
+          echo "=== Installed packages ===" > "$OUTDIR/packages.txt"
+          if command -v dpkg-query >/dev/null 2>&1; then
+            dpkg-query -W -f='${Package} ${Version}\n' 2>/dev/null | sort >> "$OUTDIR/packages.txt" || true
+          elif command -v apk >/dev/null 2>&1; then
+            apk info -v | sort >> "$OUTDIR/packages.txt" || true
+          elif command -v rpm >/dev/null 2>&1; then
+            rpm -qa --queryformat '%{NAME} %{VERSION}-%{RELEASE}\n' | sort >> "$OUTDIR/packages.txt" || true
+          else
+            echo "No supported package manager detected" >> "$OUTDIR/packages.txt"
+          fi
+
+          # Simple summary to console
+          echo "Summary:"
+          echo "PATH executables: $(wc -l < "$OUTDIR/path_executables.txt" || true)"
+          echo "All executables: $(wc -l < "$OUTDIR/all_executables.txt" || true)"
+          echo "Libs by path: $(wc -l < "$OUTDIR/libs_by_path.txt" || true)"
+          echo "Libs referenced by executables (ldd): $(wc -l < "$OUTDIR/ldd_libs.txt" || true)"
+          echo "Packages listed: $(wc -l < "$OUTDIR/packages.txt" || true)"
+
+      - name: Upload scan artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-slim-scan
+          path: scan-output
