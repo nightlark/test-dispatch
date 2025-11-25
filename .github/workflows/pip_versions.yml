@@ -1,0 +1,149 @@
+on:
+  workflow_dispatch:
+
+name: Get info on python, pip, pipx, and uv versions
+
+jobs:
+  slim_ubuntu:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+          
+  ubuntu_22_04:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  ubuntu_24_04:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  ubuntu_22_04_arm:
+    runs-on: ubuntu-22.04-arm
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  ubuntu_24_04_arm:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  windows_2022:
+    runs-on: windows-2022
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  windows_2025:
+    runs-on: windows-2025
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  windows_11_arm:
+    runs-on: windows-11-arm
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  macos_14:
+    runs-on: macos-14
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  macos_15:
+    runs-on: macos-15
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  macos_15_intel:
+    runs-on: macos-15-intel
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
+
+  macos_26:
+    runs-on: macos-26
+    steps:
+      - name: Print versions
+        shell: bash
+        run: |
+          python --version || echo "no python"
+          python3 --version || echo "no python3"
+          pip --version || echo "no pip"
+          pipx --version || echo "no pipx"
+          uv --version || echo "no uv"
